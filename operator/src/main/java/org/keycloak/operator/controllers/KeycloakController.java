@@ -86,7 +86,6 @@ public class KeycloakController implements Reconciler<Keycloak>, EventSourceInit
     UpgradeLogicFactory upgradeLogicFactory;
 
     volatile KeycloakDeploymentDependentResource deploymentDependentResource;
-    volatile KeycloakUpdateJobDependentResource updateJobDependentResource;
 
     @Override
     public Map<String, EventSource> prepareEventSources(EventSourceContext<Keycloak> context) {
@@ -106,9 +105,6 @@ public class KeycloakController implements Reconciler<Keycloak>, EventSourceInit
 
         this.deploymentDependentResource = new KeycloakDeploymentDependentResource(config, watchedResources, distConfigurator);
         sources.putAll(EventSourceInitializer.nameEventSourcesFromDependentResource(context, this.deploymentDependentResource));
-
-        updateJobDependentResource = new KeycloakUpdateJobDependentResource(config);
-        sources.putAll(EventSourceInitializer.nameEventSourcesFromDependentResource(context, updateJobDependentResource));
 
         return sources;
     }
@@ -144,7 +140,7 @@ public class KeycloakController implements Reconciler<Keycloak>, EventSourceInit
             return UpdateControl.updateResource(kc);
         }
 
-        var upgradeLogicControl = upgradeLogicFactory.create(kc, context, deploymentDependentResource, updateJobDependentResource)
+        var upgradeLogicControl = upgradeLogicFactory.create(kc, context, deploymentDependentResource)
                 .decideUpgrade();
         if (upgradeLogicControl.isPresent()) {
             Log.debug("--- Reconciliation interrupted due to upgrade logic");

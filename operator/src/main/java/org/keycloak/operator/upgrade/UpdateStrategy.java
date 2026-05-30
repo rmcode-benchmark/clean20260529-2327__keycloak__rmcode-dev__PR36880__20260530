@@ -23,9 +23,5 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 public enum UpdateStrategy {
     @JsonPropertyDescription("Shutdown the Keycloak cluster before applying the new changes.")
     @JsonProperty("Recreate")
-    RECREATE,
-
-    @JsonPropertyDescription("Automatically detects if the Keycloak CR changes requires a rolling or recreate update.")
-    @JsonProperty("Auto")
-    AUTO
+    RECREATE
 }

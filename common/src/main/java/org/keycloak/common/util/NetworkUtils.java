@@ -417,7 +417,7 @@ public class NetworkUtils {
         return checkForPresence("os.name", "sun");
     }
 
-    public static boolean checkForWindows() {
+    private static boolean checkForWindows() {
         return checkForPresence("os.name", "win");
     }
 
