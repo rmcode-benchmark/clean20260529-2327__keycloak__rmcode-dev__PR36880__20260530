@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Red Hat, Inc. and/or its affiliates
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-package org.keycloak.operator.upgrade;
+package org.keycloak.testframework.remote.providers.runonserver;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import org.keycloak.models.KeycloakSession;
 
-public enum UpdateStrategy {
-    @JsonPropertyDescription("Shutdown the Keycloak cluster before applying the new changes.")
-    @JsonProperty("Recreate")
-    RECREATE,
+import java.io.Serializable;
 
-    @JsonPropertyDescription("Automatically detects if the Keycloak CR changes requires a rolling or recreate update.")
-    @JsonProperty("Auto")
-    AUTO
+/**
+ * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
+ */
+public interface FetchOnServer extends Serializable {
+
+    Object run(KeycloakSession session);
+
 }
