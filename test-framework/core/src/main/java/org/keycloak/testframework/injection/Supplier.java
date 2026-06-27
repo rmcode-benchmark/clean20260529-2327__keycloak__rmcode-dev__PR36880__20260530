@@ -40,4 +40,8 @@ public interface Supplier<T, S extends Annotation> {
         return SupplierOrder.DEFAULT;
     }
 
+    default Set<Class<?>> dependencies() {
+        return Collections.emptySet();
+    }
+
 }

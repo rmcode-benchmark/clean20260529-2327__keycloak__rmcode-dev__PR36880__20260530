@@ -3,8 +3,6 @@ package org.keycloak.testframework.remote;
 import org.keycloak.testframework.TestFrameworkExtension;
 import org.keycloak.testframework.injection.Supplier;
 import org.keycloak.testframework.remote.timeoffset.TimeOffsetSupplier;
-import org.keycloak.testframework.runonserver.RunOnServerSupplier;
-import org.keycloak.testframework.runonserver.TestClassServerSupplier;
 
 import java.util.List;
 
@@ -13,9 +11,7 @@ public class RemoteTestFrameworkExtension implements TestFrameworkExtension {
     public List<Supplier<?, ?>> suppliers() {
         return List.of(
                 new TimeOffsetSupplier(),
-                new RunOnServerSupplier(),
-                new RemoteProvidersSupplier(),
-                new TestClassServerSupplier()
+                new RemoteProvidersSupplier()
         );
     }
 

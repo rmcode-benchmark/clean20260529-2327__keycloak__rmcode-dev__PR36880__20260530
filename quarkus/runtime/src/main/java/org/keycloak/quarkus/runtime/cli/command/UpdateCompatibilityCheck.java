@@ -20,7 +20,9 @@ package org.keycloak.quarkus.runtime.cli.command;
 import java.io.File;
 import java.io.IOException;
 
+import org.keycloak.common.Profile;
 import org.keycloak.quarkus.runtime.cli.PropertyException;
+import org.keycloak.quarkus.runtime.compatibility.CompatibilityResult;
 import org.keycloak.quarkus.runtime.compatibility.ServerInfo;
 import org.keycloak.util.JsonSerialization;
 import picocli.CommandLine;
@@ -40,12 +42,19 @@ public class UpdateCompatibilityCheck extends AbstractUpdatesCommand {
     String inputFile;
 
     @Override
-    int executeAction() {
+    public void run() {
+        if (!Profile.isFeatureEnabled(Profile.Feature.ROLLING_UPDATES)) {
+            printFeatureDisabled();
+            picocli.exit(CompatibilityResult.FEATURE_DISABLED);
+            return;
+        }
+        printPreviewWarning();
+        validateConfig();
         var info = readServerInfo();
         var result = compatibilityManager.isCompatible(info);
         result.errorMessage().ifPresent(this::printError);
         result.endMessage().ifPresent(this::printOut);
-        return result.exitCode();
+        picocli.exit(result.exitCode());
     }
 
     @Override
@@ -65,9 +74,7 @@ public class UpdateCompatibilityCheck extends AbstractUpdatesCommand {
     }
 
     private void validateFileParameter() {
-        if (inputFile == null || inputFile.isBlank()) {
-            throw new PropertyException("Missing required argument: " + INPUT_OPTION_NAME);
-        }
+        validateOptionIsPresent(inputFile, INPUT_OPTION_NAME);
         var file = new File(inputFile);
         if (!file.exists()) {
             throw new PropertyException("Incorrect argument %s. Path '%s' not found".formatted(INPUT_OPTION_NAME, file.getAbsolutePath()));

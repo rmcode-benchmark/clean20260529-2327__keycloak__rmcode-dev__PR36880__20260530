@@ -21,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.keycloak.common.Profile;
 import org.keycloak.quarkus.runtime.cli.PropertyException;
+import org.keycloak.quarkus.runtime.compatibility.CompatibilityResult;
 import org.keycloak.quarkus.runtime.compatibility.ServerInfo;
 import org.keycloak.util.JsonSerialization;
 import picocli.CommandLine;
@@ -40,11 +42,17 @@ public class UpdateCompatibilityMetadata extends AbstractUpdatesCommand {
     String outputFile;
 
     @Override
-    int executeAction() {
+    public void run() {
+        if (!Profile.isFeatureEnabled(Profile.Feature.ROLLING_UPDATES)) {
+            printFeatureDisabled();
+            picocli.exit(CompatibilityResult.FEATURE_DISABLED);
+            return;
+        }
+        printPreviewWarning();
+        validateConfig();
         var info = compatibilityManager.current();
         printToConsole(info);
         writeToFile(info);
-        return 0;
     }
 
     @Override
